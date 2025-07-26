@@ -1,0 +1,8 @@
+x = 3 + 4 * 2
+y = 5
+print("x = 3 + 4 * 2:")
+print(x)
+print("y = 5:")
+print(y)
+print("x + y")
+print(x + y)
