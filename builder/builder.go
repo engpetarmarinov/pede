@@ -10,12 +10,13 @@ import (
 	"github.com/engpetarmarinov/pede/codegen"
 	"github.com/engpetarmarinov/pede/lexer"
 	"github.com/engpetarmarinov/pede/parser"
+	"github.com/engpetarmarinov/pede/preprocessor"
 )
 
-// Preprocess preprocesses the input string, strip comments, etc.
+// Preprocess preprocesses the input string, strips comments and empty/unknown lines, and returns a cleaned string.
 func Preprocess(input string) (string, error) {
-	// TODO: implement, no-op for now
-	return input, nil
+	filtered, err := preprocessor.Preprocess(input, preprocessor.DefaultRules())
+	return filtered, err
 }
 
 // Lex lexes the input string and returns a lexer instance
@@ -26,7 +27,12 @@ func Lex(input string) *lexer.Lexer {
 // Parse parses the input using the lexer and returns an AST
 func Parse(lx *lexer.Lexer) *ast.Program {
 	p := parser.NewParser(lx)
-	return p.Parse()
+	astProgram, err := p.Parse()
+	if err != nil {
+		slog.Error("builder parse failed", "err", err)
+		os.Exit(1)
+	}
+	return astProgram
 }
 
 // Codegen generates LLVM IR from the AST
